@@ -1444,14 +1444,9 @@
 
   function efSubmit() {
     clearErr('err-course');
-    clearErr('err-address');
-    clearInvalid('ef-address');
 
     const course   = document.querySelector('input[name="course"]:checked');
-    const address  = document.getElementById('ef-address').value.trim();
-
-    if (!course)   { showErr('err-course',  '⚠ Please select a course.'); return; }
-    if (!address)  { showErr('err-address', '⚠ Please enter your address.'); markInvalid('ef-address'); return; }
+    if (!course) { showErr('err-course', '⚠ Please select a course.'); return; }
 
     const name    = document.getElementById('ef-name').value.trim();
     const phone   = document.getElementById('ef-phone').value.trim();

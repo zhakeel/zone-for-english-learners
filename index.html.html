@@ -1297,6 +1297,11 @@
           <input type="email" id="ef-email" placeholder="e.g. you@gmail.com" autocomplete="email">
           <span class="ef-err" id="err-email"></span>
         </div>
+        <div class="form-group">
+          <label>Your Address <span class="req">*</span></label>
+          <input type="text" id="ef-address" placeholder="e.g. No. 12, Main Street, Kinniya" autocomplete="street-address">
+          <span class="ef-err" id="err-address"></span>
+        </div>
         <button class="btn-submit" onclick="efNext()">Next →</button>
       </div>
 
@@ -1313,12 +1318,6 @@
             <label class="ef-choice"><input type="radio" name="course" value="Business English"><span>💼 Business English</span></label>
           </div>
           <span class="ef-err" id="err-course"></span>
-        </div>
-
-        <div class="form-group" style="margin-top:1.5rem;">
-          <label>Your Address <span class="req">*</span></label>
-          <input type="text" id="ef-address" placeholder="e.g. No. 12, Main Street, Kinniya" autocomplete="street-address">
-          <span class="ef-err" id="err-address"></span>
         </div>
 
         <div style="display:flex; gap:0.75rem; margin-top:1.5rem;">
@@ -1411,17 +1410,20 @@
 
   function efNext() {
     let valid = true;
-    const name  = document.getElementById('ef-name').value.trim();
-    const phone = document.getElementById('ef-phone').value.trim();
-    const email = document.getElementById('ef-email').value.trim();
+    const name    = document.getElementById('ef-name').value.trim();
+    const phone   = document.getElementById('ef-phone').value.trim();
+    const email   = document.getElementById('ef-email').value.trim();
+    const address = document.getElementById('ef-address').value.trim();
 
-    clearErr('err-name');  clearInvalid('ef-name');
-    clearErr('err-phone'); clearInvalid('ef-phone');
-    clearErr('err-email'); clearInvalid('ef-email');
+    clearErr('err-name');    clearInvalid('ef-name');
+    clearErr('err-phone');   clearInvalid('ef-phone');
+    clearErr('err-email');   clearInvalid('ef-email');
+    clearErr('err-address'); clearInvalid('ef-address');
 
-    if (!name)  { showErr('err-name',  '⚠ Please enter your full name.');        markInvalid('ef-name');  valid = false; }
-    if (!phone || phone.length < 7) { showErr('err-phone', '⚠ Please enter a valid phone number.'); markInvalid('ef-phone'); valid = false; }
+    if (!name)  { showErr('err-name',  '⚠ Please enter your full name.');        markInvalid('ef-name');    valid = false; }
+    if (!phone || phone.length < 7) { showErr('err-phone', '⚠ Please enter a valid phone number.'); markInvalid('ef-phone');   valid = false; }
     if (!email || !email.includes('@')) { showErr('err-email', '⚠ Please enter a valid email address.'); markInvalid('ef-email'); valid = false; }
+    if (!address) { showErr('err-address', '⚠ Please enter your address.');       markInvalid('ef-address'); valid = false; }
     if (!valid) return;
 
     document.getElementById('ef-page-1').style.display = 'none';
@@ -1451,9 +1453,10 @@
     if (!course)   { showErr('err-course',  '⚠ Please select a course.'); return; }
     if (!address)  { showErr('err-address', '⚠ Please enter your address.'); markInvalid('ef-address'); return; }
 
-    const name  = document.getElementById('ef-name').value.trim();
-    const phone = document.getElementById('ef-phone').value.trim();
-    const email = document.getElementById('ef-email').value.trim();
+    const name    = document.getElementById('ef-name').value.trim();
+    const phone   = document.getElementById('ef-phone').value.trim();
+    const email   = document.getElementById('ef-email').value.trim();
+    const address = document.getElementById('ef-address').value.trim();
 
     document.getElementById('ef-summary').innerHTML = `
       <strong>Name:</strong> ${name}<br>
@@ -1475,7 +1478,7 @@
     document.getElementById('ef-greeting').innerHTML =
       `Dear <strong>${firstName}</strong>, thank you for enrolling with <strong>Zone for English Learners</strong>! 🙏<br><br>
        Your application has been received successfully. Our team will contact you soon to confirm your spot.`;
-    fetch('https://script.google.com/macros/s/AKfycbzKFow1naDGsZBUpNKlL-BiBMm6bCEAzH0bgPDgm1lnHXUp8TxdokKcgtZZybk3LH_9aQ/exec', {
+    fetch('https://script.google.com/macros/s/AKfycbxCDMUEcAJzr5Z1He-q0f3IK_0xWyDa4pRbpt0OGUERvOLRnHA_yUHUn4jPP-5AErZisw/exec', {
       method: 'POST',
       body: JSON.stringify({ name, phone, email, course: course.value, address }),
       headers: { 'Content-Type': 'application/json' }

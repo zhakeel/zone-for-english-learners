@@ -1473,10 +1473,17 @@
     document.getElementById('ef-greeting').innerHTML =
       `Dear <strong>${firstName}</strong>, thank you for enrolling with <strong>Zone for English Learners</strong>! 🙏<br><br>
        Your application has been received successfully. Our team will contact you soon to confirm your spot.`;
-    fetch('https://script.google.com/macros/s/AKfycbxCDMUEcAJzr5Z1He-q0f3IK_0xWyDa4pRbpt0OGUERvOLRnHA_yUHUn4jPP-5AErZisw/exec', {
+    // Send to Google Sheet via FormData (no-cors compatible)
+    const fd = new FormData();
+    fd.append('name',    name);
+    fd.append('phone',   phone);
+    fd.append('email',   email);
+    fd.append('course',  course.value);
+    fd.append('address', address);
+    fetch('https://script.google.com/macros/s/AKfycbx5DHpSk9bU4Ch95DIG1XJ5owy3xd5U1oXmsZ597k5Ebeox8tLUjuGiudAmUeCzDIedmg/exec', {
       method: 'POST',
-      body: JSON.stringify({ name, phone, email, course: course.value, address }),
-      headers: { 'Content-Type': 'application/json' }
+      mode: 'no-cors',
+      body: fd
     });
   }
 </script>

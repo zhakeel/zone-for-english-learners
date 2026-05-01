@@ -1267,7 +1267,7 @@
           <span class="ef-brand">Zone for English Learners</span>
         </div>
         <h3>Enrollment Form</h3>
-        <p>Fill in your details below.✅</p>
+        <p>Fill in your details below. Our team will contact you soon. ✅</p>
         <div class="ef-divider"></div>
       </div>
 
@@ -1319,7 +1319,6 @@
           </div>
           <span class="ef-err" id="err-course"></span>
         </div>
-
         <div style="display:flex; gap:0.75rem; margin-top:1.5rem;">
           <button class="btn-ghost-dark" onclick="efBack()">← Back</button>
           <button class="btn-submit" style="flex:1" onclick="efSubmit()">Submit Application →</button>
@@ -1332,12 +1331,10 @@
         <h4>Welcome to the ZEL!</h4>
         <p id="ef-greeting"></p>
         <div class="ef-summary" id="ef-summary"></div>
-
         <div class="ef-congrats-box">
           <span class="ef-congrats-emoji">🌟</span>
-          <p>Your journey to English fluency starts here. We are excited to have you with us and can't wait to see you grow!</p>
+          <p>👆 Check the new tab that just opened — your Google Form is already filled in! Just scroll down and click <strong>"Submit"</strong> to save your enrollment. Our team will contact you soon! 🌟</p>
         </div>
-
         <a href="#programs" class="btn-submit" style="display:block; text-align:center; margin-top:1.5rem; text-decoration:none;">View Our Courses</a>
       </div>
 
@@ -1382,21 +1379,20 @@
   </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
+  emailjs.init('M11LTp74LhEJB3XB_');
   // ── Scroll reveal ──
   const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) e.target.classList.add('visible');
-    });
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
   }, { threshold: 0.1 });
-
   document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
-  // ── Custom Enrollment Form ──
+  // ── Radio highlight ──
   document.querySelectorAll('.ef-choice').forEach(label => {
     label.addEventListener('click', () => {
-      const name = label.querySelector('input').name;
-      document.querySelectorAll(`.ef-choices input[name="${name}"]`).forEach(r => {
+      const n = label.querySelector('input').name;
+      document.querySelectorAll(`.ef-choices input[name="${n}"]`).forEach(r => {
         r.closest('.ef-choice').classList.remove('selected');
       });
       label.classList.add('selected');
@@ -1404,8 +1400,8 @@
   });
 
   function showErr(id, msg) { const el = document.getElementById(id); if (el) el.textContent = msg; }
-  function clearErr(id) { showErr(id, ''); }
-  function markInvalid(id) { const el = document.getElementById(id); if (el) el.classList.add('invalid'); }
+  function clearErr(id)     { showErr(id, ''); }
+  function markInvalid(id)  { const el = document.getElementById(id); if (el) el.classList.add('invalid'); }
   function clearInvalid(id) { const el = document.getElementById(id); if (el) el.classList.remove('invalid'); }
 
   function efNext() {
@@ -1420,15 +1416,16 @@
     clearErr('err-email');   clearInvalid('ef-email');
     clearErr('err-address'); clearInvalid('ef-address');
 
-    if (!name)  { showErr('err-name',  '⚠ Please enter your full name.');        markInvalid('ef-name');    valid = false; }
-    if (!phone || phone.length < 7) { showErr('err-phone', '⚠ Please enter a valid phone number.'); markInvalid('ef-phone');   valid = false; }
-    if (!email || !email.includes('@')) { showErr('err-email', '⚠ Please enter a valid email address.'); markInvalid('ef-email'); valid = false; }
-    if (!address) { showErr('err-address', '⚠ Please enter your address.');       markInvalid('ef-address'); valid = false; }
+    if (!name)                         { showErr('err-name',    '⚠ Please enter your full name.');        markInvalid('ef-name');    valid = false; }
+    if (!phone || phone.length < 7)    { showErr('err-phone',   '⚠ Please enter a valid phone number.');  markInvalid('ef-phone');   valid = false; }
+    if (!email || !email.includes('@')) { showErr('err-email',   '⚠ Please enter a valid email address.'); markInvalid('ef-email');   valid = false; }
+    if (!address)                      { showErr('err-address', '⚠ Please enter your address.');          markInvalid('ef-address'); valid = false; }
     if (!valid) return;
 
     document.getElementById('ef-page-1').style.display = 'none';
     document.getElementById('ef-page-2').style.display = 'block';
-    document.getElementById('step-dot-1').classList.replace('active', 'done') || document.getElementById('step-dot-1').classList.add('done');
+    document.getElementById('step-dot-1').classList.remove('active');
+    document.getElementById('step-dot-1').classList.add('done');
     document.getElementById('step-dot-2').classList.add('active');
     document.querySelectorAll('.ef-step-line')[0].classList.add('done');
   }
@@ -1444,14 +1441,51 @@
 
   function efSubmit() {
     clearErr('err-course');
-
-    const course   = document.querySelector('input[name="course"]:checked');
+    const course = document.querySelector('input[name="course"]:checked');
     if (!course) { showErr('err-course', '⚠ Please select a course.'); return; }
 
     const name    = document.getElementById('ef-name').value.trim();
     const phone   = document.getElementById('ef-phone').value.trim();
     const email   = document.getElementById('ef-email').value.trim();
     const address = document.getElementById('ef-address').value.trim();
+
+    // ── Send via EmailJS ──
+    emailjs.send('service_3sw377a', 'template_khb5eo7', {
+      student_name:  name,
+      phone:         phone,
+      student_email: email,
+      address:       address,
+      course:        course.value,
+      email:         email
+    }).then(() => {
+      console.log('Email sent!');
+    }).catch((err) => {
+      console.error('EmailJS error:', err);
+    });
+
+    // ── Open pre-filled Google Form in new tab ──
+    const FORM_ID = '1FAIpQLSdAKfyxCjEHUpt-IQZrp8Ou66uv6ASbK4slOyp4ISwXgu-sRw';
+    const prefilledUrl = 'https://docs.google.com/forms/d/e/' + FORM_ID + '/viewform'
+      + '?entry.1355314359=' + encodeURIComponent(name)
+      + '&entry.1819513557=' + encodeURIComponent(phone)
+      + '&entry.1088116420=' + encodeURIComponent(email)
+      + '&entry.839484505='  + encodeURIComponent(address)
+      + '&entry.1743296927=' + encodeURIComponent(course.value);
+    window.open(prefilledUrl, '_blank');
+
+    // ── Show success screen ──
+    document.getElementById('ef-page-2').style.display = 'none';
+    document.getElementById('ef-page-3').style.display = 'block';
+    document.getElementById('step-dot-2').classList.remove('active');
+    document.getElementById('step-dot-2').classList.add('done');
+    document.getElementById('step-dot-3').classList.add('active', 'done');
+    document.querySelectorAll('.ef-step-line')[1].classList.add('done');
+
+    const firstName = name.split(' ')[0];
+    document.getElementById('ef-greeting').innerHTML =
+      `Dear <strong>${firstName}</strong>, your details have been sent! 🙏<br><br>
+       A Google Form has opened in a new tab with <strong>all your details already filled in</strong>. 
+       Please go to that tab and click <strong>"Submit"</strong> to complete your enrollment.`;
 
     document.getElementById('ef-summary').innerHTML = `
       <strong>Name:</strong> ${name}<br>
@@ -1460,31 +1494,6 @@
       <strong>Course:</strong> ${course.value}<br>
       <strong>Address:</strong> ${address}
     `;
-
-    document.getElementById('ef-page-2').style.display = 'none';
-    document.getElementById('ef-page-3').style.display = 'block';
-    document.getElementById('step-dot-2').classList.remove('active');
-    document.getElementById('step-dot-2').classList.add('done');
-    document.getElementById('step-dot-3').classList.add('active', 'done');
-    document.querySelectorAll('.ef-step-line')[1].classList.add('done');
-
-    // Personalized greeting
-    const firstName = name.split(' ')[0];
-    document.getElementById('ef-greeting').innerHTML =
-      `Dear <strong>${firstName}</strong>, thank you for enrolling with <strong>Zone for English Learners</strong>! 🙏<br><br>
-       Your application has been received successfully. Our team will contact you soon to confirm your spot.`;
-    // Send to Google Sheet via FormData (no-cors compatible)
-    const fd = new FormData();
-    fd.append('name',    name);
-    fd.append('phone',   phone);
-    fd.append('email',   email);
-    fd.append('course',  course.value);
-    fd.append('address', address);
-    fetch('https://script.google.com/macros/s/AKfycbx5DHpSk9bU4Ch95DIG1XJ5owy3xd5U1oXmsZ597k5Ebeox8tLUjuGiudAmUeCzDIedmg/exec', {
-      method: 'POST',
-      mode: 'no-cors',
-      body: fd
-    });
   }
 </script>
 </body>

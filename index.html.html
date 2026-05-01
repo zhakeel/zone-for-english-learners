@@ -1379,9 +1379,7 @@
   </div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
-  emailjs.init('M11LTp74LhEJB3XB_');
   // ── Scroll reveal ──
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
@@ -1449,21 +1447,7 @@
     const email   = document.getElementById('ef-email').value.trim();
     const address = document.getElementById('ef-address').value.trim();
 
-    // ── Send via EmailJS ──
-    emailjs.send('service_3sw377a', 'template_khb5eo7', {
-      student_name:  name,
-      phone:         phone,
-      student_email: email,
-      address:       address,
-      course:        course.value,
-      email:         email
-    }).then(() => {
-      console.log('Email sent!');
-    }).catch((err) => {
-      console.error('EmailJS error:', err);
-    });
-
-    // ── Open pre-filled Google Form in new tab ──
+    // ── Open pre-filled Google Form in new tab — student just clicks Submit ──
     const FORM_ID = '1FAIpQLSdAKfyxCjEHUpt-IQZrp8Ou66uv6ASbK4slOyp4ISwXgu-sRw';
     const prefilledUrl = 'https://docs.google.com/forms/d/e/' + FORM_ID + '/viewform'
       + '?entry.1355314359=' + encodeURIComponent(name)
@@ -1483,9 +1467,8 @@
 
     const firstName = name.split(' ')[0];
     document.getElementById('ef-greeting').innerHTML =
-      `Dear <strong>${firstName}</strong>, your details have been sent! 🙏<br><br>
-       A Google Form has opened in a new tab with <strong>all your details already filled in</strong>. 
-       Please go to that tab and click <strong>"Submit"</strong> to complete your enrollment.`;
+      `Dear <strong>${firstName}</strong>, thank you for enrolling with <strong>Zone for English Learners</strong>! 🙏<br><br>
+       A form has opened in a new tab with your details already filled in — please go there and click <strong>"Submit"</strong> to complete your enrollment.`;
 
     document.getElementById('ef-summary').innerHTML = `
       <strong>Name:</strong> ${name}<br>

@@ -1221,7 +1221,54 @@
     </div>
   </div>
 </section>
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="section-label fade-up">Our Moments</div>
+  <h2 class="fade-up">Life at <em>Zone for English Learners</em></h2>
+  <p class="section-intro fade-up">Snapshots from our classes, events, and student milestones. Real people, real progress.</p>
 
+  <!-- Filter buttons -->
+  <div class="gallery-filter fade-up">
+    <button class="filter-btn active" onclick="filterGallery('all', this)">All Photos</button>
+    <button class="filter-btn" onclick="filterGallery('class', this)">Classes</button>
+    <button class="filter-btn" onclick="filterGallery('event', this)">Events</button>
+  </div>
+
+  <!-- Masonry grid — replace src="..." with your own photo URLs or file paths -->
+  <div class="gallery-grid fade-up" id="galleryGrid">
+
+    <div class="gallery-item" data-cat="class" onclick="openLightbox(0)">
+      <img src="IMG-20241104-WA0265?w=600&q=80" alt="Classroom session">
+      <div class="gallery-overlay"><span class="gallery-caption">📚 Classroom Session</span></div>
+    </div>
+
+    <div class="gallery-item" data-cat="event" onclick="openLightbox(1)">
+      <img src="C:\Users\zhake\OneDrive\Documents\src=photosclass1.jpg\photos\IMG-20241104-WA0265.jpg?w=600&q=80" alt="Speaking event">
+      <div class="gallery-overlay"><span class="gallery-caption">🎤 Speaking Event</span></div>
+    </div>
+
+    <div class="gallery-item" data-cat="class" onclick="openLightbox(3)">
+      <img src="C:\Users\zhake\OneDrive\Documents\src=photosclass1.jpg\photos\IMG-20241104-WA0206.jpg?w=600&q=80" alt="Group activity">
+      <div class="gallery-overlay"><span class="gallery-caption">💬 Group Activity</span></div>
+    </div>
+
+    <div class="gallery-item" data-cat="event" onclick="openLightbox(4)">
+      <img src="C:\Users\zhake\OneDrive\Documents\src=photosclass1.jpg\photos\20241024_080953.jpg?w=600&q=80" alt="Student workshop">
+      <div class="gallery-overlay"><span class="gallery-caption">🏅 Student Workshop</span></div>
+    </div>
+
+    <div class="gallery-item" data-cat="event" onclick="openLightbox(7)">
+      <img src="C:\Users\zhake\OneDrive\Documents\src=photosclass1.jpg\photos\20260102_191630.mp4?w=600&q=80" alt="Public speaking">
+      <div class="gallery-overlay"><span class="gallery-caption">🌟 Public Speaking</span></div>
+    </div>
+
+    <div class="gallery-item" data-cat="class" onclick="openLightbox(8)">
+      <img src="C:\Users\zhake\OneDrive\Documents\src=photosclass1.jpg\photos\IMG-20241104-WA0205.jpg" alt="Reading class">
+      <div class="gallery-overlay"><span class="gallery-caption">📖 Reading Class</span></div>
+    </div>
+
+  </div>
+</section>
 <!-- ENROLL -->
 <section id="enroll">
   <div class="section-label fade-up">Join Us</div>

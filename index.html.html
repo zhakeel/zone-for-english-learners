@@ -1669,7 +1669,7 @@ document.addEventListener('keydown', e => {
 <!-- ── Firebase Gallery Loader ── -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const app = initializeApp({
   apiKey: "AIzaSyDn4b3InpK68vw9HdTgHCc6jpmUuh0YD0c",
@@ -1686,24 +1686,33 @@ const sizePattern = ['gallery-wide', 'gallery-tall', 'gallery-wide', 'gallery-no
 
 async function loadGallery() {
   const grid = document.getElementById('gallery-grid');
-  const loading = document.getElementById('gallery-loading');
   if (!grid) return;
 
   try {
-    const snap = await getDocs(query(collection(db, 'gallery'), orderBy('createdAt', 'desc')));
-    if (loading) loading.remove();
+    // Fetch without orderBy (client-side sort to avoid index requirement)
+    const snap = await getDocs(collection(db, 'gallery'));
+
+    // Remove loader
+    const loader = document.getElementById('gallery-loader');
+    if (loader) loader.remove();
 
     if (snap.empty) {
       grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--muted);font-size:.9rem">No photos yet. Check back soon!</div>';
       return;
     }
 
+    // Build and sort client-side (newest first)
+    const items = [];
+    snap.forEach(d => items.push(d.data()));
+    items.sort((a, b) => {
+      const ta = a.createdAt && a.createdAt.toMillis ? a.createdAt.toMillis() : 0;
+      const tb = b.createdAt && b.createdAt.toMillis ? b.createdAt.toMillis() : 0;
+      return tb - ta;
+    });
+
     grid.innerHTML = '';
-    let i = 0;
-    snap.forEach(d => {
-      const g = d.data();
+    items.forEach((g, i) => {
       const sizeClass = sizePattern[i % sizePattern.length];
-      i++;
       const fig = document.createElement('figure');
       fig.className = 'gallery-item ' + sizeClass;
       fig.onclick = () => openLightbox(fig);
@@ -1717,7 +1726,8 @@ async function loadGallery() {
     });
   } catch (e) {
     console.error('Gallery load error:', e);
-    if (loading) loading.remove();
+    const loader = document.getElementById('gallery-loader');
+    if (loader) loader.remove();
     grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--muted);font-size:.85rem">Could not load gallery photos. Please refresh the page.</div>`;
   }
 }
